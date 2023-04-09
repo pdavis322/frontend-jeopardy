@@ -1,35 +1,35 @@
-@import './base.css';
+:root {
+    --main-color: rgb(193, 193, 193);
+    --font: 'Avenir', Helvetica, Arial, sans-serif;
+}
+html, body, #app {
+  height: 100%;
+  margin: 0;
+}
 
 #app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-
-  font-weight: normal;
+  background-color: rgb(27, 27, 27);
+  font-family: var(--font);
+  text-align: center;
+  color: var(--main-color);
+  display: flex;
+  flex-direction: column;
 }
 
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
+button {
+    background-color: black;
+    border: 3px solid var(--main-color);
+    border-radius: 3px;
+    outline: none;
+    padding: 1rem;
+    color: var(--main-color);
+    font-family: var(--font);
+    font-size: 1rem;
 }
-
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-  }
+button:hover {
+    cursor: pointer;
 }
-
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
-
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
-  }
+button:active{
+    background-color: var(--main-color);
+    color: black;
 }

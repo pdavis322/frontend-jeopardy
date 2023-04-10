@@ -1,8 +1,8 @@
 <script setup lang="ts">
     import { Host } from "@/socket/host";
-    function host(): void {
+    async function host(): Promise<void> {
         const h = new Host();
-        console.log(h.code);
+
     }
 </script>
 

@@ -2,19 +2,16 @@ import { io, Socket} from "socket.io-client";
 
 
 export class Host {
-    code: string;
+    code: string = "";
     socket: Socket; 
 
     constructor() {
         this.socket = io("localhost:3000");
-        this.code = "";
-        this.socket.emit("host", (response: any) => {
-            console.log(this.code);
-        });
+        this.connect();
     }
 
     async connect(): Promise<void> {
-
+        return await this.socket.emitWithAck("host");
     }
 
 }

@@ -1,8 +1,17 @@
-<script setup lang="ts">
+<script lang="ts">
     import { Host } from "@/socket/host";
-    async function host(): Promise<void> {
-        const h = new Host();
-
+    export default {
+        data() {
+            return {
+                code: ''
+            }
+        },
+        methods: {
+            async host(): Promise<void> {
+                const h = new Host();
+                this.code = (await h.connect()).code;
+            }
+        }
     }
 </script>
 

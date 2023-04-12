@@ -1,10 +1,23 @@
-<script setup lang="ts">
-import Landing from './components/Landing.vue'
+<script lang="ts">
+    import Landing from './components/Landing.vue'
+    export default {
+        data() {
+            return {
+                host: false,
+                roomCode: ""
+            }
+        },
+        methods: {
+            cont() {
+
+            }
+        }
+    }
 </script>
 
 <template>
     <main>
-        <Landing />
+        <Landing @cont="cont" />
     </main>
 </template>
 

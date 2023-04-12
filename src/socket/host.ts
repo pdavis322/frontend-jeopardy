@@ -10,7 +10,7 @@ export class Host {
         this.connect();
     }
 
-    async connect(): Promise<void> {
+    async connect(): Promise<any> {
         return await this.socket.emitWithAck("host");
     }
 

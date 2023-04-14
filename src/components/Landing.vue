@@ -1,9 +1,12 @@
 <script lang="ts">
     import { Host } from "@/socket/host";
+    import { Client } from "@/socket/client";
     export default {
         data() {
             return {
-                roomCode: ''
+                roomCode: '',
+                name: '',
+                joining: false
             }
         },
         methods: {
@@ -13,7 +16,7 @@
                 this.$emit('cont', h);
             },
             async join(): Promise<void> {
-
+                console.log(this.roomCode);
             }
         },
         emits: ['cont']
@@ -23,8 +26,15 @@
 <template>
     <div id="landing">
         <h1>Trivia</h1>
-        <button @click="host">Host Game</button>
-        <button>Join Game</button>
+        <template v-if="!joining">
+            <button @click="host">Host Game</button>
+            <button @click="joining=true">Join Game</button>
+        </template>
+        <template v-else>
+            <input placeholder="Room code" type="text" v-model="roomCode" v-on:keyup="join" />
+            <input placeholder="Name" type="text" v-model="name" v-on:keyup="join" />
+            <button @click="join">Join</button>
+        </template>
     </div>
 </template>
 

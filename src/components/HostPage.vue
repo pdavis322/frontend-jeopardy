@@ -3,6 +3,11 @@
     export default {
         props: {
             roomCode: String
+        },
+        data() {
+            return {
+                players: []
+            }
         }
     }
 </script>
@@ -12,6 +17,7 @@
         <h1>
             Room code: {{ roomCode }}
         </h1>
+        <h2>Players connected: <span v-for="p in players">{{ p }}</span></h2>
     </div>
 </template>
 

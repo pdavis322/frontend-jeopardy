@@ -8,11 +8,10 @@ export class Client {
 
     constructor() {
         this.socket = io("localhost:3000");
-        this.connect();
     }
 
-    async connect(): Promise<any> {
-        this.roomCode = await this.socket.emitWithAck("host");
+    async connect(roomCode: string, name: string): Promise<any> {
+        this.socket.emit("join", roomCode, name);
     }
 
 }

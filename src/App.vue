@@ -1,5 +1,4 @@
 <script lang="ts">
-// TODO: FIGURE OUT WHY HOSTING CAUSES TWO ROOMS TO BE created
     import Landing from './components/Landing.vue';
     import HostPage from './components/HostPage.vue';
     import type { Host } from './socket/host';
@@ -35,5 +34,6 @@
     </main>
 </template>
 
-<style scoped>
+<style>
+    @import './assets/main.css';
 </style>

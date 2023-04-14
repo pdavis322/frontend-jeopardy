@@ -1,5 +1,6 @@
 :root {
     --main-color: rgb(193, 193, 193);
+    --bg-color: rgb(27, 27, 27);
     --font: 'Avenir', Helvetica, Arial, sans-serif;
 }
 html, body, #app {
@@ -8,7 +9,7 @@ html, body, #app {
 }
 
 #app {
-  background-color: rgb(27, 27, 27);
+  background-color: var(--bg-color);
   font-family: var(--font);
   text-align: center;
   color: var(--main-color);
@@ -32,4 +33,12 @@ button:hover {
 button:active{
     background-color: var(--main-color);
     color: black;
+}
+
+input[type=text] {
+    font-size: 1rem;
+    background-color: var(--bg-color);
+    color: var(--main-color);
+    outline: none;
+    border: 2px solid var(--main-color);
 }

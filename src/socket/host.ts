@@ -7,7 +7,6 @@ export class Host {
 
     constructor() {
         this.socket = io("localhost:3000");
-        this.connect();
     }
 
     async connect(): Promise<any> {

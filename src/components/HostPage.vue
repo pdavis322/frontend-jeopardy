@@ -1,5 +1,10 @@
-<script setup lang="ts">
+<script lang="ts">
     import { Host } from "@/socket/host";
+    export default {
+        props: {
+            roomCode: String
+        }
+    }
 </script>
 
 <template>

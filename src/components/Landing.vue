@@ -3,23 +3,26 @@
     export default {
         data() {
             return {
-                code: ''
+                roomCode: ''
             }
         },
         methods: {
             async host(): Promise<void> {
                 const h = new Host();
-                this.code = (await h.connect()).code;
+                await h.connect();
+                this.$emit('cont', h);
+            },
+            async join(): Promise<void> {
+
             }
-        }
+        },
+        emits: ['cont']
     }
 </script>
 
 <template>
     <div id="landing">
-        <h1>
-            Jeopardy!
-        </h1>
+        <h1>Trivia</h1>
         <button @click="host">Host Game</button>
         <button>Join Game</button>
     </div>

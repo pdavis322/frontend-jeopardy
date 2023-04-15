@@ -1,27 +1,23 @@
 <script lang="ts">
     import Landing from './components/Landing.vue';
     import HostPage from './components/HostPage.vue';
+    import ClientPage from './components/ClientPage.vue';
     import type { Host } from './socket/host';
     import type { Client } from './socket/client';
     export default {
         data() {
             return {
-                roomCode: "",
-                host: false
+                hostOrClient: {} as Host | Client
             }
         },
         methods: {
             cont(hostOrClient: Host | Client) {
-                if ('name' in hostOrClient) {
-                }
-                else {
-                    this.roomCode = hostOrClient.roomCode;
-                    this.host = true;
-                }
+                this.hostOrClient = hostOrClient;
             }
         },
         components: {
             Landing,
+            ClientPage,
             HostPage
         }
     }
@@ -29,11 +25,11 @@
 
 <template>
     <main>
-        <Landing v-if="!roomCode" @cont="cont" />
-        <HostPage :room-code="roomCode" v-else-if="host" />
+        <Landing v-if="!hostOrClient.roomCode" @cont="cont" />
+        <ClientPage v-else-if="'name' in hostOrClient" />
+        <HostPage v-else :host="hostOrClient" />
     </main>
 </template>
 
-<style>
-    @import './assets/main.css';
+<style scoped>
 </style>

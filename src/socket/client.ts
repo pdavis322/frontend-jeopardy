@@ -11,7 +11,8 @@ export class Client {
     }
 
     async connect(roomCode: string, name: string): Promise<any> {
-        this.socket.emit("join", roomCode, name);
+        this.roomCode = roomCode;
+        return (await this.socket.emitWithAck("join", roomCode, name)).status;
     }
 
 }

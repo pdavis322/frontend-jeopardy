@@ -1,33 +1,35 @@
 <script lang="ts">
-    import { Host } from "@/socket/host";
+    import HostGame from './HostGame.vue';
     export default {
-        props: {
-            roomCode: String
-        },
+        props: ['host'],
         data() {
             return {
-                players: []
+                waiting: true
             }
-        }
+        },
+        methods: {
+        },
+        mounted() {
+            this.host?.waitForJoins();
+        },
+        components: {HostGame}
     }
 </script>
 
 <template>
-    <div id="landing">
+
+    <template v-if="waiting">
         <h1>
-            Room code: {{ roomCode }}
+            Room code: {{ host?.roomCode }}
         </h1>
-        <h2>Players connected: <span v-for="p in players">{{ p }}</span></h2>
-    </div>
+        <h2>Players connected: <br /> <span v-for="p in host.players">{{ p.name }}<br /></span></h2>
+        <br />
+        <button v-if="host.players.length" @click="waiting=false">Start game</button>
+    </template>
+
+    <HostGame :host="host" v-else />
+
 </template>
 
 <style scoped>
-    button {
-        margin: 2rem;
-    }
-    #landing {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
 </style>

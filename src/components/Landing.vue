@@ -16,7 +16,22 @@
                 this.$emit('cont', h);
             },
             async join(): Promise<void> {
-                console.log(this.roomCode);
+                if (!this.roomCode || !this.name) {
+                    alert('Please enter room code and name');
+                }
+                else {
+                    const c = new Client();
+                    let status: string = await c.connect(this.roomCode, this.name);
+                    if (status === 'room') {
+                        alert('Please enter valid room code');
+                    }
+                    else if (status === 'name') {
+                        alert('Name already in use');
+                    }
+                    else {
+                        this.$emit('cont', c);
+                    }
+                }
             }
         },
         emits: ['cont']
@@ -31,8 +46,9 @@
             <button @click="joining=true">Join Game</button>
         </template>
         <template v-else>
-            <input placeholder="Room code" type="text" v-model="roomCode" v-on:keyup="join" />
-            <input placeholder="Name" type="text" v-model="name" v-on:keyup="join" />
+            <input placeholder="Room code" type="text" v-model.trim="roomCode" v-on:keyup.enter="join" />
+            <br />
+            <input placeholder="Name" type="text" v-model="name" v-on:keyup.enter="join" />
             <button @click="join">Join</button>
         </template>
     </div>
@@ -46,5 +62,11 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+    }
+    input {
+        padding: 1rem;
+    }
+    ::placeholder {
+        color: white;
     }
 </style>

@@ -1,10 +1,9 @@
-import { io, Socket} from 'socket.io-client';
-
-
+import { io, Socket } from "socket.io-client";
 export class Host {
     roomCode: string = '';
     socket: Socket; 
     players: Object[] = [];
+    answering: Set<string> = new Set();
 
     constructor() {
         this.socket = io('localhost:3000');
@@ -24,8 +23,14 @@ export class Host {
         this.socket.removeAllListeners('playerJoined');
     }
 
-    async getQuestion(): Promise<any> {
-        this.socket.emit('getQuestion');
+    getQuestions(): Promise<any> {
+        return this.socket.emitWithAck('getQuestions');
+    }
+
+    getAnswering(): void {
+        this.socket.on('playerAnswering', (name) => {
+            this.answering.add(name);
+        });
     }
 
 }

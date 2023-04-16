@@ -63,9 +63,6 @@
         flex-direction: column;
         align-items: center;
     }
-    input {
-        padding: 1rem;
-    }
     ::placeholder {
         color: white;
     }

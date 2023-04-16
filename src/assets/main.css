@@ -42,3 +42,7 @@ input[type=text] {
     outline: none;
     border: 2px solid var(--main-color);
 }
+
+input {
+    padding: 1rem;
+}

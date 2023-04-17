@@ -24,7 +24,7 @@ export class Host {
     }
 
     getQuestions(): Promise<any> {
-        return this.socket.emitWithAck('getQuestions');
+        return this.socket.emitWithAck('getQuestions'); 
     }
 
     getAnswering(): void {

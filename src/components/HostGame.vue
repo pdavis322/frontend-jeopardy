@@ -12,6 +12,7 @@
             const p: Promise<any> = this.host.getQuestions();
             p.then((q) => {
                 this.questions = q.questions;
+                console.log(this.questions);
             });
             this.startTimer();
             this.host.getAnswering();

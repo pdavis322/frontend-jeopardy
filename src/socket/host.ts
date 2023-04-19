@@ -27,10 +27,14 @@ export class Host {
         return this.socket.emitWithAck('getQuestions'); 
     }
 
-    getAnswering(): void {
-        this.socket.on('playerAnswering', (name) => {
+    startAnswering(): void {
+        this.socket.emit('startPlayerAnswering');
+        this.socket.on('playerStartAnswer', (name) => {
+            console.log('player answering');
             this.answering.add(name);
+            console.log(this.answering);
         });
     }
+
 
 }

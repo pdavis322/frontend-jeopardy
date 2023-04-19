@@ -26,7 +26,7 @@
 <template>
     <main>
         <Landing v-if="!hostOrClient.roomCode" @cont="cont" />
-        <ClientPage v-else-if="'name' in hostOrClient" />
+        <ClientPage v-else-if="'name' in hostOrClient && hostOrClient" :client="hostOrClient" />
         <HostPage v-else :host="hostOrClient" />
     </main>
 </template>

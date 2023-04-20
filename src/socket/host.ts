@@ -1,9 +1,14 @@
 import { io, Socket } from "socket.io-client";
+
+export interface Player {
+    score: number;
+    answering: boolean;
+}
+
 export class Host {
     roomCode: string = '';
     socket: Socket; 
-    players: Object[] = [];
-    answering: Set<string> = new Set();
+    players: Record<string, Player> = {};
 
     constructor() {
         this.socket = io('localhost:3000');
@@ -14,8 +19,8 @@ export class Host {
     }
 
     waitForJoins(): void {
-        this.socket.on('playerJoined', (name) => {
-            this.players.push({name: name, score: 0});
+        this.socket.on('playerJoined', (name: string) => {
+            this.players[name] = {score: 0, answering: false};
         })
     }
 
@@ -27,13 +32,15 @@ export class Host {
         return this.socket.emitWithAck('getQuestions'); 
     }
 
-    startAnswering(): void {
+    startAnswering(addAnswering: (name: string) => void): void {
         this.socket.emit('startPlayerAnswering');
         this.socket.on('playerStartAnswer', (name) => {
-            console.log('player answering');
-            this.answering.add(name);
-            console.log(this.answering);
+            addAnswering(name);
         });
+    }
+
+    stopAnswering(): void {
+        this.socket.emit('stopPlayerAnswering');
     }
 
 

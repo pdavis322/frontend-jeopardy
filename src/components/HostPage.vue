@@ -22,9 +22,9 @@
         <h1>
             Room code: {{ host?.roomCode }}
         </h1>
-        <h2>Players connected: <br /> <span v-for="p in host.players">{{ p.name }}<br /></span></h2>
+        <h2>Players connected: <br /> <span v-for="p in Object.keys(host.players)">{{ p }}<br /></span></h2>
         <br />
-        <button v-if="host.players.length" @click="waiting=false">Start game</button>
+        <button v-if="Object.keys(host.players).length" @click="waiting=false">Start game</button>
     </template>
 
     <HostGame :host="host" v-else />

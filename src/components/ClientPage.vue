@@ -10,12 +10,14 @@
             }
         },
         methods: {
-            startAnswer() {
-                this.client.startAnswer();
+            submit() {
+                if (this.client.submitting) {
+                    this.client.submitAnswer(this.answer);
+                }
+                else {
+                    this.client.startAnswer();
+                }
             }
-            // submit() {
-                // this.client.submit(this.answer);
-            // }
         }
     }
 </script>
@@ -25,7 +27,8 @@
         Waiting...
     </h1>
     <template v-else>
-        <button @click="startAnswer">Answer</button>
+        <input type="text" v-model="answer" v-if="client.submitting" />
+        <button @click="submit">Answer</button>
     </template>
 </template>
 

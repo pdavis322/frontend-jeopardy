@@ -29,11 +29,12 @@
                 // setinterval has type number apparently
                 i: 0,
                 showingAnswer: false,
-                players: {} as Record<string, Player>
+                players: {} as Record<string, Player>,
+                currentlyAnswering: ""
             }
         },
         methods: {
-            startTimer() {
+            startTimer(): void {
                 this.timer = 10;
                 this.i = setInterval(() => {
                     this.timer -= 1;
@@ -43,17 +44,15 @@
                     }
                 }, 1000);
             },
-            addAnswering(name: string) {
+            addAnswering(name: string): void {
                 if (this.i) {
                     clearInterval(this.i);
                     this.i = 0;
+                    this.timer = 0;
                 }
                 this.players[name].answering = true;         
-            }
-        },
-        computed: {
-            currentlyAnswering() {
-                return Object.entries(this.players).filter(p => p[1].answering).map(p => p[0]).join(', ');
+                this.currentlyAnswering = Object.entries(this.players).filter(p => p[1].answering).map(p => p[0]).join(', ');
+                console.log(this.currentlyAnswering);
             }
         }
     }
@@ -67,7 +66,7 @@
         <h1 v-html="questions[questionIndex].category"></h1>
         <h1 v-html="questions[questionIndex].question"></h1>
         <h1 v-if="timer != 0">{{ timer }}</h1>
-        <h1 v-else-if="currentlyAnswering.length">Waiting for {{ currentlyAnswering }}</h1>
+        <h1 v-else-if="currentlyAnswering">Waiting for {{ currentlyAnswering }}</h1>
         <h1 v-else>Answer: {{ questions[questionIndex].answer }}</h1>
         <h2><span v-for="p in Object.keys(players)">{{ p }}: {{ players[p].score }}&nbsp;</span></h2>
     </template>

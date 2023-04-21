@@ -32,15 +32,22 @@ export class Host {
         return this.socket.emitWithAck('getQuestions'); 
     }
 
-    startAnswering(addAnswering: (name: string) => void): void {
+    startAnswering(changeAnswering: (name: string, add: boolean) => void): void {
         this.socket.emit('startPlayerAnswering');
         this.socket.on('playerStartAnswer', (name) => {
-            addAnswering(name);
+            changeAnswering(name, true);
+        });
+        this.socket.on('playerStopAnswer', (name) => {
+            changeAnswering(name, false);
         });
     }
 
     stopAnswering(): void {
         this.socket.emit('stopPlayerAnswering');
+    }
+
+    async getResults(): Promise<Number[]> {
+        return this.socket.emitWithAck("getResults");
     }
 
 

@@ -18,13 +18,13 @@ export class Client {
         return (await this.socket.emitWithAck("join", roomCode, name)).status;
     }
 
-    waitForQuestion(): void {
+    waitForQuestion(setAnswering: (val: boolean) => void): void {
         this.socket.on("startAnswering", () => {
-            this.answering = true;
+            setAnswering(true);
         });
 
         this.socket.on("stopAnswering", () => {
-            this.answering = false;
+            setAnswering(false);
             this.socket.removeAllListeners("startAnswering");
             this.socket.removeAllListeners("stopAnswering");
         });
@@ -33,10 +33,8 @@ export class Client {
     startAnswer(): void {
         this.socket.emit("playerStartAnswer", this.name);
     }
-    // submit(answer: string): void {
-    //     this.socket.emit("playerAnswer", answer);
-    // }
 
-
-
+    submitAnswer(answer: string): void {
+        this.socket.emit("playerSubmitAnswer", answer);
+    }
 }

@@ -1,5 +1,7 @@
+<!-- TODO: make sure that timer still counts down when waiting for someone as long as its above 0 -->
 <script lang="ts">
     import type { Player } from '../socket/host';
+    const timerLength = 3;
     export default {
         props: ['host'],
         async mounted() {
@@ -18,14 +20,14 @@
             // });
             // MOVE THIS STUFF INSIDE PROMISE.THEN
             this.startTimer();
-            this.host.startAnswering(this.addAnswering);
+            this.host.startAnswering(this.changeAnswering);
         },
         data() {
             return {
                 starting: 0,
                 questions: [{"category":"People & Places","question":"Famous Families:- Which American President Married His Cousin ","answer":"Franklin d Roosevelt"},{"category":"People & Places","question":"Where was Albert Einstein Born ","answer":"Germany"},{"category":"People & Places","question":"Which Hollywood Actress Was Convicted Of Shop Lifting In 2002? ","answer":"Winona Ryder"},{"category":"People & Places","question":"Who is David John Cornwell better known as?","answer":"John Le Carre"},{"category":"People & Places","question":"Elvis Presley:- Who said Elvis died the day he joined the army? ","answer":"John Lennon"},{"category":"Science & Nature","question":" __________ can withstand water pressure of up to 850 pounds per square inch.","answer":"Seals"},{"category":"Science & Nature","question":" The hippopotamus has skin an inch_and_a_half thick, so solid that most __________ cannot penetrate it.","answer":"Bullets"},{"category":"Science & Nature","question":"How many Astronaughs crewed the Gemini series of Spacecraft?","answer":"Two"},{"category":"Science & Nature","question":"A rhinoceros has __________ toes on each foot.","answer":"3"},{"category":"Science & Nature","question":" A snail speeding along at three inches per minute would need 15 days to travel __________","answer":"One Mile"},{"category":"Language","question":"\"Entre nous\" means __________.","answer":"Between Ourselves"},{"category":"Language","question":"What is the English word for 'fiesta'?","answer":"Festival"},{"category":"Language","question":"From what language is the term 'finito'?","answer":"Italian"},{"category":"Language","question":"From what Irish words is 'Dublin' derived?","answer":"Dubh Linn"},{"category":"Language","question":"An adjective meaning 'pertaining to the sun.'","answer":"Solar"}],
                 questionIndex: 0,
-                timer: 10,
+                timer: timerLength,
                 // setinterval has type number apparently
                 i: 0,
                 showingAnswer: false,
@@ -35,24 +37,38 @@
         },
         methods: {
             startTimer(): void {
-                this.timer = 10;
+                this.timer = timerLength;
                 this.i = setInterval(() => {
                     this.timer -= 1;
                     if (this.timer === 0) {
                         clearInterval(this.i);
                         this.host.stopAnswering();
+                        setTimeout(async () => {
+                            this.i = 0;
+                            await this.showResults();
+                        }, 1000);
                     }
                 }, 1000);
             },
-            addAnswering(name: string): void {
-                if (this.i) {
+            changeAnswering(name: string, add: boolean): void {
+                if (add) {
                     clearInterval(this.i);
                     this.i = 0;
                     this.timer = 0;
                 }
-                this.players[name].answering = true;         
+                this.players[name].answering = add;         
                 this.currentlyAnswering = Object.entries(this.players).filter(p => p[1].answering).map(p => p[0]).join(', ');
-                console.log(this.currentlyAnswering);
+            },
+            async showResults(): Promise<void> {
+                console.log("showing reuslts!!!");
+                // console.log(await this.host.getResults());
+            }
+        },
+        watch: {
+            currentlyAnswering(newVal, oldVal) {
+                if (oldVal != "" && newVal === "") {
+                    this.showResults();
+                }
             }
         }
     }
@@ -65,12 +81,19 @@
     <template v-else-if="!showingAnswer">
         <h1 v-html="questions[questionIndex].category"></h1>
         <h1 v-html="questions[questionIndex].question"></h1>
-        <h1 v-if="timer != 0">{{ timer }}</h1>
+        <h1 v-if="i != 0"><span v-if="timer != 0">{{ timer }}</span></h1>
         <h1 v-else-if="currentlyAnswering">Waiting for {{ currentlyAnswering }}</h1>
         <h1 v-else>Answer: {{ questions[questionIndex].answer }}</h1>
-        <h2><span v-for="p in Object.keys(players)">{{ p }}: {{ players[p].score }}&nbsp;</span></h2>
+        <div class="scores">
+            <h2><span v-for="p in Object.keys(players)">{{ p }}: {{ players[p].score }}&nbsp;</span></h2>
+        </div>
     </template>
 </template>
 
 <style scoped>
+.scores {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+}
 </style>

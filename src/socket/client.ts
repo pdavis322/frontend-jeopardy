@@ -10,7 +10,7 @@ export class Client {
     answer: string = "";
 
     constructor() {
-        this.socket = io("trivia-a5fx8.fly.dev:8080");
+        this.socket = io("https://66.241.125.143:8080");
     }
 
     async connect(roomCode: string, name: string): Promise<any> {

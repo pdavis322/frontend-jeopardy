@@ -18,7 +18,7 @@ export class Host {
     players: Record<string, Player> = {};
 
     constructor() {
-        this.socket = io("trivia-a5fx8.fly.dev:8080");
+        this.socket = io("https://66.241.125.143:8080");
     }
 
     async connect(): Promise<any> {

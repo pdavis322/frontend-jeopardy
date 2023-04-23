@@ -7,6 +7,7 @@ export class Client {
     name: string = "";
     answering: boolean = false;
     submitting: boolean = false;
+    answer: string = "";
 
     constructor() {
         this.socket = io("localhost:3000");
@@ -25,8 +26,6 @@ export class Client {
 
         this.socket.on("stopAnswering", () => {
             setAnswering(false);
-            this.socket.removeAllListeners("startAnswering");
-            this.socket.removeAllListeners("stopAnswering");
         });
     }
 

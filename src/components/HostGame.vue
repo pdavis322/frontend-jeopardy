@@ -1,42 +1,41 @@
-<!-- TODO: make sure that timer still counts down when waiting for someone as long as its above 0 -->
 <script lang="ts">
     import type { Player } from '../socket/host';
-    const timerLength = 3;
+    const timerLength = 10;
     export default {
         props: ['host'],
         async mounted() {
             this.host.stopWaitForJoins();
             this.players = this.host.players;
-            // const inv = setInterval(() => {
-            //    this.starting -= 1; 
-            //    if (this.starting === 0) {
-            //     clearInterval(inv);
-            //    }
-            // }, 1000);
-            // const p: Promise<any> = this.host.getQuestions();
-            // p.then((q) => {
-            //     this.questions = q.questions;
-            //     console.log(JSON.stringify(this.questions));
-            // });
-            // MOVE THIS STUFF INSIDE PROMISE.THEN
-            this.startTimer();
-            this.host.startAnswering(this.changeAnswering);
+            const inv = setInterval(() => { 
+               this.starting -= 1; 
+               if (this.starting === 0) {
+                clearInterval(inv);
+               }
+            }, 1000);
+            const p: Promise<any> = this.host.getQuestions();
+            p.then((q) => {
+                this.questions = q.questions;
+                this.startTimer();
+            });
         },
         data() {
             return {
-                starting: 0,
-                questions: [{"category":"People & Places","question":"Famous Families:- Which American President Married His Cousin ","answer":"Franklin d Roosevelt"},{"category":"People & Places","question":"Where was Albert Einstein Born ","answer":"Germany"},{"category":"People & Places","question":"Which Hollywood Actress Was Convicted Of Shop Lifting In 2002? ","answer":"Winona Ryder"},{"category":"People & Places","question":"Who is David John Cornwell better known as?","answer":"John Le Carre"},{"category":"People & Places","question":"Elvis Presley:- Who said Elvis died the day he joined the army? ","answer":"John Lennon"},{"category":"Science & Nature","question":" __________ can withstand water pressure of up to 850 pounds per square inch.","answer":"Seals"},{"category":"Science & Nature","question":" The hippopotamus has skin an inch_and_a_half thick, so solid that most __________ cannot penetrate it.","answer":"Bullets"},{"category":"Science & Nature","question":"How many Astronaughs crewed the Gemini series of Spacecraft?","answer":"Two"},{"category":"Science & Nature","question":"A rhinoceros has __________ toes on each foot.","answer":"3"},{"category":"Science & Nature","question":" A snail speeding along at three inches per minute would need 15 days to travel __________","answer":"One Mile"},{"category":"Language","question":"\"Entre nous\" means __________.","answer":"Between Ourselves"},{"category":"Language","question":"What is the English word for 'fiesta'?","answer":"Festival"},{"category":"Language","question":"From what language is the term 'finito'?","answer":"Italian"},{"category":"Language","question":"From what Irish words is 'Dublin' derived?","answer":"Dubh Linn"},{"category":"Language","question":"An adjective meaning 'pertaining to the sun.'","answer":"Solar"}],
+                starting: 5,
+                // starting: 0,
+                questions: [],
                 questionIndex: 0,
                 timer: timerLength,
                 // setinterval has type number apparently
                 i: 0,
-                showingAnswer: false,
                 players: {} as Record<string, Player>,
-                currentlyAnswering: ""
+                currentlyAnswering: "",
+                showingResults: false,
+                gameOver: false
             }
         },
         methods: {
             startTimer(): void {
+                this.host.startAnswering(this.changeAnswering);
                 this.timer = timerLength;
                 this.i = setInterval(() => {
                     this.timer -= 1;
@@ -45,28 +44,52 @@
                         this.host.stopAnswering();
                         setTimeout(async () => {
                             this.i = 0;
-                            await this.showResults();
+                            if (!this.currentlyAnswering) {
+                                await this.showResults();
+                            }
                         }, 1000);
                     }
                 }, 1000);
             },
             changeAnswering(name: string, add: boolean): void {
-                if (add) {
-                    clearInterval(this.i);
-                    this.i = 0;
-                    this.timer = 0;
-                }
                 this.players[name].answering = add;         
                 this.currentlyAnswering = Object.entries(this.players).filter(p => p[1].answering).map(p => p[0]).join(', ');
             },
             async showResults(): Promise<void> {
-                console.log("showing reuslts!!!");
-                // console.log(await this.host.getResults());
+                const r = await this.host.getResults();
+                this.showingResults = true;
+                for (const p of r) {
+                    const { name, score, answer } = p;
+                    this.players[name].result = score;
+                    this.players[name].correct = score > 0 ? "correct" : "incorrect";
+                    this.players[name].score += score;
+                    this.players[name].answer = answer;
+                }
+            },
+            nextQuestion(): void {
+                this.questionIndex += 1;
+                if (this.questionIndex === this.questions.length) {
+                    this.gameOver = true;
+                }
+                else {
+                    for (const p in this.players) {
+                        this.players[p].answer = "";
+                        this.players[p].correct = "";
+                        this.players[p].result = 0;
+                    }
+                    this.showingResults = false;
+                    this.startTimer();
+                }
+            },
+            override(name: string): void {
+                const p = this.players[name];
+                p.score += -p.result * 2;
+                p.correct = "";
             }
         },
         watch: {
             currentlyAnswering(newVal, oldVal) {
-                if (oldVal != "" && newVal === "") {
+                if (oldVal !== "" && newVal === "" && this.i === 0) {
                     this.showResults();
                 }
             }
@@ -78,15 +101,24 @@
     <template v-if="!questions.length || starting > 0">
         <h1><span v-if="starting > 0">Game starts in {{ starting }}...</span> <span v-else>Waiting for questions...</span></h1>
     </template>
-    <template v-else-if="!showingAnswer">
+    <template v-else-if="!gameOver">
         <h1 v-html="questions[questionIndex].category"></h1>
         <h1 v-html="questions[questionIndex].question"></h1>
         <h1 v-if="i != 0"><span v-if="timer != 0">{{ timer }}</span></h1>
-        <h1 v-else-if="currentlyAnswering">Waiting for {{ currentlyAnswering }}</h1>
-        <h1 v-else>Answer: {{ questions[questionIndex].answer }}</h1>
+        <h1 v-if="currentlyAnswering">Waiting for {{ currentlyAnswering }}</h1>
+        <h1 v-else-if="showingResults">Answer: {{ questions[questionIndex].answer }}</h1>
         <div class="scores">
-            <h2><span v-for="p in Object.keys(players)">{{ p }}: {{ players[p].score }}&nbsp;</span></h2>
+            <div v-for="p in Object.keys(players)">
+                <div class="score">{{ p }}: <span :class="players[p].correct"> {{ players[p].score }}</span> &nbsp;</div><div class="score">{{ players[p].answer }}</div><button class="score" @click="override(p)" v-if="players[p].correct">Override</button>
+            </div>
         </div>
+        <button @click="nextQuestion" v-if="showingResults">Next</button>
+    </template>
+    <template v-else>
+        <h1>Game Over</h1>
+            <div v-for="p in Object.keys(players)">
+                <h1 class="score">{{ p }}: {{ players[p].score }}&nbsp;</h1>
+            </div>
     </template>
 </template>
 
@@ -95,5 +127,20 @@
     display: flex;
     flex-flow: row wrap;
     justify-content: space-evenly;
+    margin: 1.5rem;
+}
+
+.score, button {
+    font-size: 1.5rem;
+    margin: 1rem;
+    font-weight: bold;
+}
+
+.correct {
+    color: green;
+}
+
+.incorrect {
+    color: red;
 }
 </style>

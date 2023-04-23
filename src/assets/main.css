@@ -1,6 +1,6 @@
 :root {
     --main-color: rgb(193, 193, 193);
-    --bg-color: rgb(27, 27, 27);
+    --bg-color: rgb(0, 0, 0);
     --font: 'Avenir', Helvetica, Arial, sans-serif;
 }
 html, body, #app {

@@ -3,6 +3,9 @@ import { io, Socket } from "socket.io-client";
 export interface Player {
     score: number;
     answering: boolean;
+    answer: string;
+    result: number;
+    correct: string;
 }
 
 export class Host {
@@ -20,7 +23,7 @@ export class Host {
 
     waitForJoins(): void {
         this.socket.on('playerJoined', (name: string) => {
-            this.players[name] = {score: 0, answering: false};
+            this.players[name] = {score: 0, answering: false, correct: "", answer: "", result: 0};
         })
     }
 
@@ -46,8 +49,8 @@ export class Host {
         this.socket.emit('stopPlayerAnswering');
     }
 
-    async getResults(): Promise<Number[]> {
-        return this.socket.emitWithAck("getResults");
+    async getResults(): Promise<any> {
+        return (await this.socket.emitWithAck("getResults")).results;
     }
 
 

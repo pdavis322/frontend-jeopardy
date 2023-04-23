@@ -48,7 +48,7 @@
         <template v-else>
             <input placeholder="Room code" type="text" v-model.trim="roomCode" v-on:keyup.enter="join" />
             <br />
-            <input placeholder="Name" type="text" v-model="name" v-on:keyup.enter="join" />
+            <input placeholder="Name" autocomplete="off" type="text" v-model="name" v-on:keyup.enter="join" />
             <button @click="join">Join</button>
         </template>
     </div>

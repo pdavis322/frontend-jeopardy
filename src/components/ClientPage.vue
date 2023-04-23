@@ -1,14 +1,15 @@
+<!-- TODO: when host timer expires and one client is answering, other clients don't get told to stop answering -->
 <script lang="ts">
-    const timerLength = 5;
+    const timerLength = 15;
     export default {
         props: ['client'],
         mounted() {
-            this.client.waitForQuestion((val: boolean) => {this.answering = val});
+            this.client.waitForQuestion((val: boolean) => {if (!this.submitting) this.answering = val});
         },
         data() {
             return {
-                answer: "",
                 answering: false,
+                answer: "",
                 submitting: false,
                 timer: timerLength,
                 i: 0
@@ -19,6 +20,7 @@
                 clearInterval(this.i);
                 if (this.submitting) {
                     this.client.submitAnswer(this.answer);
+                    this.answer = "";
                     this.submitting = false;
                     this.answering = false;
                 }
@@ -50,7 +52,7 @@
     <template v-else>
         <template v-if="submitting">
             <h1>{{ timer }}</h1>
-            <input type="text" v-model="answer" v-if="submitting" />
+            <input type="text" autofocus autocomplete="off" v-model="answer" v-on:keyup.enter="submit" v-if="submitting" />
             <br />
         </template>
         <button @click="submit">Answer</button>

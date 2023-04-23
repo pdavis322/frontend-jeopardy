@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { Player } from '../socket/host';
+    import type { Player, Question } from '../socket/host';
     const timerLength = 15;
     export default {
         props: ['host'],
@@ -10,7 +10,7 @@
                this.starting -= 1; 
                if (this.starting === 0) {
                 clearInterval(inv);
-                if (this.questions) {
+                if (this.questions.length) {
                     this.startTimer();
                 }
                }
@@ -27,7 +27,7 @@
             return {
                 starting: 5,
                 // starting: 0,
-                questions: [],
+                questions: [] as Question[],
                 questionIndex: 0,
                 timer: timerLength,
                 // setinterval has type number apparently

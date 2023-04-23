@@ -8,6 +8,10 @@ export interface Player {
     correct: string;
 }
 
+export interface Question {
+    [key: string]: string
+}
+
 export class Host {
     roomCode: string = '';
     socket: Socket; 

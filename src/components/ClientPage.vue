@@ -1,4 +1,3 @@
-<!-- TODO: when host timer expires and one client is answering, other clients don't get told to stop answering -->
 <script lang="ts">
     const timerLength = 15;
     export default {

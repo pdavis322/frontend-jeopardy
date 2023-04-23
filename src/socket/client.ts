@@ -10,7 +10,7 @@ export class Client {
     answer: string = "";
 
     constructor() {
-        this.socket = io("https://jeopardy-amet.onrender.com:3000");
+        this.socket = io("trivia-a5fx8.fly.dev:8080");
     }
 
     async connect(roomCode: string, name: string): Promise<any> {

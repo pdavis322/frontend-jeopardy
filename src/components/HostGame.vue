@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { Player } from '../socket/host';
-    const timerLength = 10;
+    const timerLength = 15;
     export default {
         props: ['host'],
         async mounted() {
@@ -10,12 +10,17 @@
                this.starting -= 1; 
                if (this.starting === 0) {
                 clearInterval(inv);
+                if (this.questions) {
+                    this.startTimer();
+                }
                }
             }, 1000);
             const p: Promise<any> = this.host.getQuestions();
             p.then((q) => {
                 this.questions = q.questions;
-                this.startTimer();
+                if (this.starting === 0) {
+                    this.startTimer();
+                }
             });
         },
         data() {
@@ -70,6 +75,7 @@
                 this.questionIndex += 1;
                 if (this.questionIndex === this.questions.length) {
                     this.gameOver = true;
+                    this.host.gameOver();
                 }
                 else {
                     for (const p in this.players) {

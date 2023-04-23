@@ -10,7 +10,7 @@ export class Client {
     answer: string = "";
 
     constructor() {
-        this.socket = io("localhost:3000");
+        this.socket = io();
     }
 
     async connect(roomCode: string, name: string): Promise<any> {

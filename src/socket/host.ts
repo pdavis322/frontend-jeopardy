@@ -14,7 +14,7 @@ export class Host {
     players: Record<string, Player> = {};
 
     constructor() {
-        this.socket = io('localhost:3000');
+        this.socket = io();
     }
 
     async connect(): Promise<any> {
@@ -51,6 +51,10 @@ export class Host {
 
     async getResults(): Promise<any> {
         return (await this.socket.emitWithAck("getResults")).results;
+    }
+
+    gameOver(): void {
+        this.socket.emit('gameOver');
     }
 
 

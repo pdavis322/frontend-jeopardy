@@ -3,13 +3,12 @@
   "exclude": ["node_modules"],
   "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "src/**/*.ts", "*.d.ts"],
   "compilerOptions": {
-    "baseUrl": ".",
+    "baseUrl": "./src",
     "paths": {
       "@/*": ["./*"]
     },
     "lib": ["ES2017.Object", "ES2015", "dom"],
-    "skipLibCheck": true,
-    "types": []
+    "skipLibCheck": true
   },
 
   "references": [

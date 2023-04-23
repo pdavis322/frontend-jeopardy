@@ -18,7 +18,7 @@ export class Host {
     players: Record<string, Player> = {};
 
     constructor() {
-        this.socket = io();
+        this.socket = io("https://jeopardy-amet.onrender.com:3000");
     }
 
     async connect(): Promise<any> {

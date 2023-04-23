@@ -10,7 +10,7 @@ export class Client {
     answer: string = "";
 
     constructor() {
-        this.socket = io();
+        this.socket = io("https://jeopardy-amet.onrender.com:3000");
     }
 
     async connect(roomCode: string, name: string): Promise<any> {

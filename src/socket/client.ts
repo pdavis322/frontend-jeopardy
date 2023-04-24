@@ -10,7 +10,7 @@ export class Client {
     answer: string = "";
 
     constructor() {
-        this.socket = io("94.140.8.159:3000");
+        this.socket = io("http://172.23.129.145:3000");
     }
 
     async connect(roomCode: string, name: string): Promise<any> {

@@ -18,7 +18,7 @@ export class Host {
     players: Record<string, Player> = {};
 
     constructor() {
-        this.socket = io("94.140.8.159:3000");
+        this.socket = io("http://172.23.129.145:3000");
     }
 
     async connect(): Promise<any> {

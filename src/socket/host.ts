@@ -18,7 +18,7 @@ export class Host {
     players: Record<string, Player> = {};
 
     constructor() {
-        this.socket = io("https://ec2-18-118-167-100.us-east-2.compute.amazonaws.com");
+        this.socket = io("http://ec2-18-118-167-100.us-east-2.compute.amazonaws.com");
     }
 
     async connect(): Promise<any> {

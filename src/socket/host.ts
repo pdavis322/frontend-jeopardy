@@ -4,6 +4,7 @@ export interface Player {
     score: number;
     answering: boolean;
     answer: string;
+    answered: boolean;
     result: number;
     correct: string;
 }
@@ -27,7 +28,7 @@ export class Host {
 
     waitForJoins(): void {
         this.socket.on('playerJoined', (name: string) => {
-            this.players[name] = {score: 0, answering: false, correct: "", answer: "", result: 0};
+            this.players[name] = {score: 0, answering: false, correct: "", answer: "", result: 0, answered: false};
         })
     }
 

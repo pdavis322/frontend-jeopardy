@@ -1,6 +1,7 @@
 <script lang="ts">
     import type { Player, Question } from '../socket/host';
     const timerLength = 15;
+    const startingLength = 5;
     export default {
         props: ['host'],
         async mounted() {
@@ -25,7 +26,7 @@
         },
         data() {
             return {
-                starting: 5,
+                starting: startingLength,
                 // starting: 0,
                 questions: [] as Question[],
                 questionIndex: 0,
@@ -58,6 +59,7 @@
             },
             changeAnswering(name: string, add: boolean): void {
                 this.players[name].answering = add;         
+                this.players[name].answered = true;
                 this.currentlyAnswering = Object.entries(this.players).filter(p => p[1].answering).map(p => p[0]).join(', ');
             },
             async showResults(): Promise<void> {
@@ -82,6 +84,7 @@
                         this.players[p].answer = "";
                         this.players[p].correct = "";
                         this.players[p].result = 0;
+                        this.players[p].answered = false;
                     }
                     this.showingResults = false;
                     this.startTimer();
@@ -95,7 +98,12 @@
         },
         watch: {
             currentlyAnswering(newVal, oldVal) {
-                if (oldVal !== "" && newVal === "" && this.i === 0) {
+                if (oldVal !== "" && newVal === "" && (this.i === 0 || Object.values(this.players).every(p => p.answered))) {
+                    if (this.i) {
+                        clearInterval(this.i);
+                        this.host.stopAnswering();
+                        this.i = 0;
+                    }
                     this.showResults();
                 }
             }

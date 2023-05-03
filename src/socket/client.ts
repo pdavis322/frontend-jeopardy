@@ -1,5 +1,8 @@
 import { io, Socket} from "socket.io-client";
 
+const url = "trivia.eastus.cloudapp.azure.com:8080";
+// const url = "localhost:8080";
+
 export class Client {
     roomCode: string = "";
     socket: Socket; 
@@ -9,7 +12,7 @@ export class Client {
     answer: string = "";
 
     constructor() {
-        this.socket = io("20.185.221.111:8080");
+        this.socket = io(url);
     }
 
     async connect(roomCode: string, name: string): Promise<any> {

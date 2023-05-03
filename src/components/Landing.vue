@@ -1,3 +1,6 @@
+<!-- TODO: press enter to go to enxt question -->
+<!-- TODO: session cookies for rejoining -->
+<!-- maybe wait until callbacks from all clients to proceed for showing buttons etc? -->
 <script lang="ts">
     import { Host } from "@/socket/host";
     import { Client } from "@/socket/client";
@@ -21,7 +24,7 @@
                 }
                 else {
                     const c = new Client();
-                    let status: string = await c.connect(this.roomCode, this.name);
+                    let status: string = await c.connect(this.roomCode.toUpperCase(), this.name);
                     if (status === 'room') {
                         alert('Please enter valid room code');
                     }
@@ -46,7 +49,7 @@
             <button @click="joining=true">Join Game</button>
         </template>
         <template v-else>
-            <input placeholder="Room code" type="text" v-model.trim="roomCode" v-on:keyup.enter="join" />
+            <input id="roomCode" placeholder="Room code" type="text" v-model.trim="roomCode" v-on:keyup.enter="join" />
             <br />
             <input placeholder="Name" autocomplete="off" type="text" v-model="name" v-on:keyup.enter="join" />
             <button @click="join">Join</button>
@@ -63,7 +66,23 @@
         flex-direction: column;
         align-items: center;
     }
+    #roomCode {
+        text-transform: uppercase;
+    }
     ::placeholder {
         color: white;
+        text-transform: initial;
     }
+    ::-webkit-input-placeholder {
+   text-transform: initial;
+}
+
+:-moz-placeholder { 
+   text-transform: initial;
+}
+
+::-moz-placeholder {  
+   text-transform: initial;
+}
+
 </style>
